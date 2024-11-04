@@ -76,5 +76,3 @@ func (c *ControladorSimulacion) Registro() string {
     }
     return logString
 }
-
-

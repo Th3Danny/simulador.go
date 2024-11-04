@@ -7,14 +7,13 @@ import (
     "fyne.io/fyne/v2/widget"
     "fyne.io/fyne/v2"
     "simulador/src/app"
-    "image/color"
     "fmt"
     "time"
 )
 
 type Interfaz struct {
     controlador *app.ControladorSimulacion
-    espacios    []*canvas.Rectangle
+    espacios     []*canvas.Image // Cambia a *canvas.Image para usar imágenes
 }
 
 func NuevaInterfaz(controlador *app.ControladorSimulacion) *Interfaz {
@@ -25,34 +24,46 @@ func (i *Interfaz) Iniciar() {
     aplicacion := fyneApp.New()
     ventana := aplicacion.NewWindow("Simulador de Estacionamiento")
 
-    i.espacios = make([]*canvas.Rectangle, 20)
+    // Inicializar los espacios para los vehículos
+    i.espacios = make([]*canvas.Image, 20)
     grid := container.NewGridWithColumns(5)
 
+    // Cargar imágenes para cada espacio
     for j := 0; j < 20; j++ {
-        rect := canvas.NewRectangle(color.Gray{Y: 200})
-        rect.SetMinSize(fyne.NewSize(50, 50))
-        i.espacios[j] = rect
-        grid.Add(rect)
+        // Inicializar espacio libre
+        img := canvas.NewImageFromFile("assets/estacionamineto.jpg") // Imagen para espacio libre
+        img.SetMinSize(fyne.NewSize(80, 50)) // Ajustar tamaño
+        i.espacios[j] = img
+        grid.Add(img) // Agregar el espacio al grid
     }
 
     go func() {
         for {
-            time.Sleep(500 * time.Millisecond)
+            time.Sleep(500 * time.Millisecond) // Controla la frecuencia de actualización
             ocupacion := i.controlador.EstacionamientoOcupado()
             fmt.Printf("Ocupación actual: %d\n", ocupacion) // Mensaje de depuración
-    
+
+            // Actualizar el estado de los espacios
             for j := 0; j < 20; j++ {
                 if j < ocupacion {
-                    i.espacios[j].FillColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
+                    // Cambiar a la imagen que representa un vehículo
+                    imgVehiculo := canvas.NewImageFromFile("assets/car.png") // Imagen del vehículo
+                    imgVehiculo.SetMinSize(fyne.NewSize(80, 40)) // Ajustar tamaño
+                    i.espacios[j] = imgVehiculo // Actualizar el espacio con la imagen del vehículo
                 } else {
-                    i.espacios[j].FillColor = color.Gray{Y: 200}
+                    // Mantener la imagen de fondo para el espacio libre
+                    imgEspacio := canvas.NewImageFromFile("assets/estacionamineto.jpg") // Imagen para espacio libre
+                    i.espacios[j] = imgEspacio
                 }
-                i.espacios[j].Refresh()
+                grid.Objects[j] = i.espacios[j] // Actualizar el objeto en el contenedor
+                i.espacios[j].Refresh() // Refrescar la imagen
             }
+
+            // Asegúrate de que el grid se actualice
+            grid.Refresh() 
         }
     }()
-    
-    
+
     ventana.SetContent(container.NewVBox(
         widget.NewLabel("Estado del Estacionamiento"),
         grid,
