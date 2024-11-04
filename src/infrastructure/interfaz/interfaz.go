@@ -13,8 +13,8 @@ import (
 
 type Interfaz struct {
 	controlador      *app.ControladorSimulacion
-	espacios         []*canvas.Image // Imágenes de espacios
-	vehiculosEsperar []int           // IDs de vehículos en espera
+	espacios         []*canvas.Image 
+	vehiculosEsperar []int
 }
 
 func NuevaInterfaz(controlador *app.ControladorSimulacion) *Interfaz {
@@ -64,7 +64,7 @@ func (i *Interfaz) Iniciar() {
 				}
 			}
 
-			// Refrescar el grid
+			
 			grid.Refresh()
 		}
 	}()

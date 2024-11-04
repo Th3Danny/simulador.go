@@ -8,22 +8,22 @@ import (
     "time"
 )
 
-// ControladorSimulacion maneja la lógica de la simulación
+
 type ControladorSimulacion struct {
     estacionamiento    *domain.Estacionamiento
     rnd                *rand.Rand
     log                []string
     mutex              sync.Mutex
-    VehiculosEnEspera  []int // Lista de IDs de vehículos en espera
+    VehiculosEnEspera  []int 
 }
 
-// NuevoControlador crea una nueva instancia de ControladorSimulacion
+
 func NuevoControlador(estacionamiento *domain.Estacionamiento, rnd *rand.Rand) *ControladorSimulacion {
     return &ControladorSimulacion{
         estacionamiento:   estacionamiento,
         rnd:               rnd,
         log:               make([]string, 0),
-        VehiculosEnEspera: make([]int, 0), // Inicializar la lista
+        VehiculosEnEspera: make([]int, 0), 
     }
 }
 
@@ -33,7 +33,7 @@ func (c *ControladorSimulacion) IniciarSimulacion() {
         vehiculo := domain.GenerarVehiculo(id, c.rnd)
         fmt.Println("Generando vehículo:", vehiculo.ID) 
         go c.intentarEntrada(vehiculo)
-        time.Sleep(time.Duration(c.rnd.ExpFloat64()) * time.Second) // Usar Poisson
+        time.Sleep(time.Duration(c.rnd.ExpFloat64()) * time.Second) 
         id++
     }
 }
