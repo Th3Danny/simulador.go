@@ -8,7 +8,7 @@ type Vehiculo struct {
 }
 
 func GenerarVehiculo(id int, rnd *rand.Rand) *Vehiculo {
-    tiempo := rnd.Intn(3) + 3 // Aleatorio entre 3 y 5 segundos
+    tiempo := rnd.Intn(3) + 3 
     return &Vehiculo{
         ID:     id,
         Tiempo: tiempo,
