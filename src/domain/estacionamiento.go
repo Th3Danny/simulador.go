@@ -8,7 +8,7 @@ type Estacionamiento struct {
     mutex     sync.Mutex
 }
 
-// Crear un nuevo estacionamiento
+
 func NuevoEstacionamiento(capacidad int) *Estacionamiento {
     return &Estacionamiento{
         capacidad: capacidad,
@@ -27,7 +27,7 @@ func (e *Estacionamiento) IntentarEntrar() bool {
     return false
 }
 
-// Salir del estacionamiento
+
 func (e *Estacionamiento) Salir() {
     e.mutex.Lock()
     defer e.mutex.Unlock()

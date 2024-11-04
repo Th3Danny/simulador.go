@@ -7,7 +7,7 @@ import (
 )
 
 func EjecutarSimulacion(estacionamiento *domain.Estacionamiento) {
-    rnd := rand.New(rand.NewSource(time.Now().UnixNano())) // Crear el generador aleatorio local
-    controlador := NuevoControlador(estacionamiento, rnd)  // Ahora acepta dos argumentos
+    rnd := rand.New(rand.NewSource(time.Now().UnixNano())) 
+    controlador := NuevoControlador(estacionamiento, rnd)  
     controlador.IniciarSimulacion()
 }

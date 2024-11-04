@@ -13,7 +13,7 @@ import (
 
 type Interfaz struct {
     controlador *app.ControladorSimulacion
-    espacios     []*canvas.Image // Cambia a *canvas.Image para usar imágenes
+    espacios     []*canvas.Image 
 }
 
 func NuevaInterfaz(controlador *app.ControladorSimulacion) *Interfaz {
@@ -28,11 +28,11 @@ func (i *Interfaz) Iniciar() {
     i.espacios = make([]*canvas.Image, 20)
     grid := container.NewGridWithColumns(5)
 
-    // Cargar imágenes para cada espacio
+    
     for j := 0; j < 20; j++ {
-        // Inicializar espacio libre
-        img := canvas.NewImageFromFile("assets/estacionamineto.jpg") // Imagen para espacio libre
-        img.SetMinSize(fyne.NewSize(80, 50)) // Ajustar tamaño
+       
+        img := canvas.NewImageFromFile("assets/estacionamineto.jpg") 
+        img.SetMinSize(fyne.NewSize(80, 50)) 
         i.espacios[j] = img
         grid.Add(img) // Agregar el espacio al grid
     }
@@ -41,25 +41,25 @@ func (i *Interfaz) Iniciar() {
         for {
             time.Sleep(500 * time.Millisecond) // Controla la frecuencia de actualización
             ocupacion := i.controlador.EstacionamientoOcupado()
-            fmt.Printf("Ocupación actual: %d\n", ocupacion) // Mensaje de depuración
+            fmt.Printf("Ocupación actual: %d\n", ocupacion) 
 
             // Actualizar el estado de los espacios
             for j := 0; j < 20; j++ {
                 if j < ocupacion {
-                    // Cambiar a la imagen que representa un vehículo
-                    imgVehiculo := canvas.NewImageFromFile("assets/car.png") // Imagen del vehículo
-                    imgVehiculo.SetMinSize(fyne.NewSize(80, 40)) // Ajustar tamaño
+                   
+                    imgVehiculo := canvas.NewImageFromFile("assets/car.png") 
+                    imgVehiculo.SetMinSize(fyne.NewSize(80, 40)) 
                     i.espacios[j] = imgVehiculo // Actualizar el espacio con la imagen del vehículo
                 } else {
                     // Mantener la imagen de fondo para el espacio libre
-                    imgEspacio := canvas.NewImageFromFile("assets/estacionamineto.jpg") // Imagen para espacio libre
+                    imgEspacio := canvas.NewImageFromFile("assets/estacionamineto.jpg") 
                     i.espacios[j] = imgEspacio
                 }
-                grid.Objects[j] = i.espacios[j] // Actualizar el objeto en el contenedor
-                i.espacios[j].Refresh() // Refrescar la imagen
+                grid.Objects[j] = i.espacios[j] 
+                i.espacios[j].Refresh() 
             }
 
-            // Asegúrate de que el grid se actualice
+           
             grid.Refresh() 
         }
     }()
