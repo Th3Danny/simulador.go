@@ -14,14 +14,14 @@ import (
 type Interfaz struct {
     controlador    *app.ControladorSimulacion
     espacios       []*canvas.Image
-    notificaciones chan struct{} // Canal para notificaciones
+    notificaciones chan struct{} 
 }
 
 func NuevaInterfaz(controlador *app.ControladorSimulacion) *Interfaz {
     return &Interfaz{
         controlador:    controlador,
         espacios:       make([]*canvas.Image, 20),
-        notificaciones: make(chan struct{}, 1), // Canal con capacidad 1 para evitar bloqueos
+        notificaciones: make(chan struct{}, 1), 
     }
 }
 
@@ -34,7 +34,7 @@ func (i *Interfaz) Iniciar() {
 
     // Inicializar los espacios
     for j := 0; j < 20; j++ {
-        img := canvas.NewImageFromFile("assets/estacionamineto.jpg") // Espacio libre
+        img := canvas.NewImageFromFile("assets/estacionamineto.jpg") 
         img.SetMinSize(fyne.NewSize(80, 50))
         i.espacios[j] = img
         grid.Add(img)
@@ -73,13 +73,12 @@ func (i *Interfaz) actualizarEstado(grid *fyne.Container) {
             nuevaImagen.SetMinSize(fyne.NewSize(80, 50))
         }
 
-        // Reemplaza la imagen y refresca
         i.espacios[j] = nuevaImagen
         grid.Objects[j] = nuevaImagen
         nuevaImagen.Refresh()
     }
 
-    grid.Refresh() // Refresca el contenedor que contiene las imágenes
+    grid.Refresh() 
 }
 
 func (i *Interfaz) ActualizarEstadoEstacionamiento() {
@@ -94,7 +93,7 @@ func (i *Interfaz) ActualizarEstadoEstacionamiento() {
 
 // Implementa el método requerido por la interfaz `domain.Observador`
 func (i *Interfaz) Actualizar(vehiculo *domain.Vehiculo) {
-    // Lógica para manejar la actualización cuando se genera un nuevo vehículo
+   
     fmt.Printf("Notificación recibida para el vehículo con ID %d\n", vehiculo.ID)
     i.actualizarEspacioVehiculo(vehiculo)
 
@@ -107,10 +106,8 @@ func (i *Interfaz) Actualizar(vehiculo *domain.Vehiculo) {
     }
 }
 
-// Método auxiliar para actualizar el espacio de un vehículo
+
 func (i *Interfaz) actualizarEspacioVehiculo(vehiculo *domain.Vehiculo) {
-    // Aquí se puede agregar la lógica para manejar el vehículo en la interfaz.
-    // Este es un ejemplo que muestra cómo podrías manejarlo:
     if vehiculo.ID < len(i.espacios) {
         nuevaImagen := canvas.NewImageFromFile("assets/car.png")
         nuevaImagen.SetMinSize(fyne.NewSize(80, 40))
