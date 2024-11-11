@@ -1,25 +1,23 @@
 package main
 
 import (
-    "simulador/src/app"
-    "simulador/src/infrastructure/interfaz"
-    "simulador/src/domain"
-    "math/rand"
-    "time"
+	"math/rand"
+	"simulador/src/app"
+	"simulador/src/domain"
+	"simulador/src/infrastructure/interfaz"
+	"time"
 )
 
 func main() {
-    estacionamiento := domain.NuevoEstacionamiento(20)
-    rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
-    controlador := app.NuevoControlador(estacionamiento, rnd)
+	// Crear un estacionamiento con capacidad para 20 vehículos
+	estacionamiento := domain.NuevoEstacionamiento(20)
 
-    // Crear la interfaz y pasarle el controlador
-    ui := interfaz.NuevaInterfaz(controlador)
+	// Crear el controlador
+	controlador := app.NuevoControlador(estacionamiento, rand.New(rand.NewSource(time.Now().UnixNano())))
 
-    // Iniciar la simulación en una goroutine
-    go controlador.IniciarSimulacion()
+	interfaz := interfaz.NuevaInterfaz(controlador)
+	estacionamiento.AgregarObservador(interfaz)
 
-    // Iniciar la interfaz gráfica
-    ui.Iniciar()
+	go controlador.IniciarSimulacion()
+	interfaz.Iniciar()
 }
-

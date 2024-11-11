@@ -1,53 +1,63 @@
 package domain
 
-import "sync"
+import(
+	"sync"
+	"fmt"
+) 
 
 type Estacionamiento struct {
-    capacidad int
-    ocupados  int
-    mutex     sync.Mutex
+    capacidad    int
+    ocupados     int
+    mutex        sync.Mutex
+    observadores []Observador
 }
 
-// NuevoEstacionamiento crea una nueva instancia del estacionamiento.
 func NuevoEstacionamiento(capacidad int) *Estacionamiento {
     return &Estacionamiento{
-        capacidad: capacidad,
-        ocupados:  0,
+        capacidad:    capacidad,
+        ocupados:     0,
+        observadores: make([]Observador, 0),
     }
 }
 
-// IntentarEntrar intenta colocar un vehículo en el estacionamiento.
-func (e *Estacionamiento) IntentarEntrar(vehiculoID int) bool {
+func (e *Estacionamiento) AgregarObservador(o Observador) {
+    e.mutex.Lock()
+    defer e.mutex.Unlock()
+    e.observadores = append(e.observadores, o)
+}
+
+func (e *Estacionamiento) NotificarObservadores() {
+    for _, observador := range e.observadores {
+        observador.ActualizarEstadoEstacionamiento()
+    }
+}
+
+func (e *Estacionamiento) IntentarEntrar() bool {
     e.mutex.Lock()
     defer e.mutex.Unlock()
     if e.ocupados < e.capacidad {
         e.ocupados++
+        fmt.Println("Vehículo entró, ocupados:", e.ocupados)
+        e.NotificarObservadores()
         return true
     }
     return false
 }
 
-// Salir elimina un vehículo del estacionamiento.
-func (e *Estacionamiento) Salir(vehiculoID int) {
+func (e *Estacionamiento) Salir() {
     e.mutex.Lock()
     defer e.mutex.Unlock()
     if e.ocupados > 0 {
         e.ocupados--
+        fmt.Println("Vehículo salió, ocupados:", e.ocupados)
+        e.NotificarObservadores()
     }
 }
 
-// ObtenerEspacios devuelve un slice con la ocupación de los espacios
-func (e *Estacionamiento) ObtenerEspacios() []int {
+
+
+func (e *Estacionamiento) Ocupados() int {
     e.mutex.Lock()
     defer e.mutex.Unlock()
-    
-    ocupacion := make([]int, e.capacidad)
-    for i := 0; i < e.capacidad; i++ {
-        if e.ocupados > i {
-            ocupacion[i] = 1 // 1 significa que está ocupado
-        } else {
-            ocupacion[i] = 0 // 0 significa que está libre
-        }
-    }
-    return ocupacion
+    return e.ocupados
 }
